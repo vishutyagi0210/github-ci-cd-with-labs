@@ -1,0 +1,91 @@
+# ============================================================
+# 10 - Artifact Upload & Download Demo
+# ============================================================
+# 📚 Module: 10 - Artifacts and Cache
+#
+# Job A builds an artifact → uploads it
+# Job B downloads the artifact → uses it
+# ============================================================
+
+name: 10 - Artifacts Upload & Download
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # ──────────────────────────────────────
+  # JOB A: Build and upload artifact
+  # ──────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔨 Create build output
+        run: |
+          mkdir -p dist
+          echo "console.log('Hello from built app!');" > dist/app.js
+          echo "body { color: blue; }" > dist/style.css
+          echo '{"version": "1.0.0", "built": "'$(date -u)'" }' > dist/manifest.json
+          echo ""
+          echo "📁 Build output:"
+          ls -la dist/
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+          retention-days: 7
+
+      - name: 📊 Also upload a test report
+        run: |
+          mkdir -p reports
+          echo "Test Suite: All Passed (42/42)" > reports/test-results.txt
+          echo "Coverage: 87%" >> reports/test-results.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/
+
+  # ──────────────────────────────────────
+  # JOB B: Download and use artifact
+  # ──────────────────────────────────────
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ./downloaded-build
+
+      - name: 📋 Verify downloaded artifact
+        run: |
+          echo "================================"
+          echo "📥 Downloaded Artifact Contents:"
+          echo "================================"
+          ls -la ./downloaded-build/
+          echo ""
+          echo "📄 manifest.json:"
+          cat ./downloaded-build/manifest.json
+          echo ""
+          echo "📄 app.js:"
+          cat ./downloaded-build/app.js
+          echo "================================"
+
+      - name: 🚀 Simulate deploy
+        run: |
+          echo "🚀 Deploying build output..."
+          echo "   Files: $(ls downloaded-build/ | tr '\n' ', ')"
+          echo "✅ Deployed!"
+
+      # Also download the test report
+      - name: 📥 Download test report
+        uses: actions/download-artifact@v4
+        with:
+          name: test-report
+          path: ./test-report
+
+      - name: 📋 Show test report
+        run: cat ./test-report/test-results.txt

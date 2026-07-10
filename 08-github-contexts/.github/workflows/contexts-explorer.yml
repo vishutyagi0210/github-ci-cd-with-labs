@@ -1,0 +1,113 @@
+# ============================================================
+# 08 - Contexts Explorer
+# ============================================================
+# 📚 Module: 08 - GitHub Contexts
+#
+# Prints all major context objects so you can see
+# every piece of metadata available to your workflows
+# ============================================================
+
+name: 08 - Contexts Explorer
+
+on:
+  workflow_dispatch:
+    inputs:
+      sample_input:
+        description: 'A sample input to demonstrate inputs context'
+        default: 'hello-from-input'
+        type: string
+
+env:
+  WORKFLOW_ENV: "I am a workflow-level env var"
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    env:
+      JOB_ENV: "I am a job-level env var"
+    steps:
+      # ── github context ──
+      - name: "🐙 github.* context"
+        run: |
+          echo "================================"
+          echo "🐙 github.* context"
+          echo "================================"
+          echo "repository:    ${{ github.repository }}"
+          echo "repository_owner: ${{ github.repository_owner }}"
+          echo "ref:           ${{ github.ref }}"
+          echo "ref_name:      ${{ github.ref_name }}"
+          echo "sha:           ${{ github.sha }}"
+          echo "actor:         ${{ github.actor }}"
+          echo "event_name:    ${{ github.event_name }}"
+          echo "workflow:      ${{ github.workflow }}"
+          echo "run_id:        ${{ github.run_id }}"
+          echo "run_number:    ${{ github.run_number }}"
+          echo "run_attempt:   ${{ github.run_attempt }}"
+          echo "workspace:     ${{ github.workspace }}"
+          echo "server_url:    ${{ github.server_url }}"
+          echo "api_url:       ${{ github.api_url }}"
+          echo "================================"
+
+      # ── runner context ──
+      - name: "🖥️ runner.* context"
+        run: |
+          echo "================================"
+          echo "🖥️ runner.* context"
+          echo "================================"
+          echo "os:       ${{ runner.os }}"
+          echo "arch:     ${{ runner.arch }}"
+          echo "name:     ${{ runner.name }}"
+          echo "temp:     ${{ runner.temp }}"
+          echo "tool_cache: ${{ runner.tool_cache }}"
+          echo "================================"
+
+      # ── env context ──
+      - name: "🌍 env.* context"
+        env:
+          STEP_ENV: "I am a step-level env var"
+        run: |
+          echo "================================"
+          echo "🌍 env.* context"
+          echo "================================"
+          echo "WORKFLOW_ENV: ${{ env.WORKFLOW_ENV }}"
+          echo "JOB_ENV:      ${{ env.JOB_ENV }}"
+          echo "STEP_ENV:     ${{ env.STEP_ENV }}"
+          echo "================================"
+
+      # ── job context ──
+      - name: "📦 job.* context"
+        run: |
+          echo "================================"
+          echo "📦 job.* context"
+          echo "================================"
+          echo "status: ${{ job.status }}"
+          echo "================================"
+
+      # ── steps context ──
+      - name: "📤 Produce a step output"
+        id: producer
+        run: echo "demo_output=produced-value" >> $GITHUB_OUTPUT
+
+      - name: "👣 steps.* context"
+        run: |
+          echo "================================"
+          echo "👣 steps.* context"
+          echo "================================"
+          echo "producer outcome:    ${{ steps.producer.outcome }}"
+          echo "producer conclusion: ${{ steps.producer.conclusion }}"
+          echo "producer output:     ${{ steps.producer.outputs.demo_output }}"
+          echo "================================"
+
+      # ── inputs context ──
+      - name: "📥 inputs.* context"
+        run: |
+          echo "================================"
+          echo "📥 inputs.* context"
+          echo "================================"
+          echo "sample_input: ${{ inputs.sample_input }}"
+          echo "================================"
+
+      # ── Full JSON dump (for deep exploration) ──
+      - name: "📋 Full github context (JSON)"
+        run: echo '${{ toJSON(github) }}' | head -50
+        continue-on-error: true

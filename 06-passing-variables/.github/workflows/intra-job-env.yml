@@ -1,0 +1,65 @@
+# ============================================================
+# 06 - Intra-Job Env (GITHUB_ENV)
+# ============================================================
+# 📚 Module: 06 - Passing Variables
+#
+# Demonstrates: setting dynamic env vars for subsequent steps
+# using $GITHUB_ENV
+# ============================================================
+
+name: 06 - Intra-Job Env
+
+on:
+  workflow_dispatch:
+
+jobs:
+  env_demo:
+    runs-on: ubuntu-latest
+    steps:
+      # ── Step 1: Set env vars dynamically ──
+      - name: 🌍 Set dynamic env vars
+        run: |
+          echo "DEPLOY_TAG=release-$(date +%Y%m%d)" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date -u +%T)" >> $GITHUB_ENV
+          echo "COMMIT_SHORT=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+          echo "✅ Env vars written to GITHUB_ENV"
+
+      # ── Step 2: Use them directly as $VAR ──
+      - name: 📋 Use env vars (no id needed!)
+        run: |
+          echo "================================"
+          echo "📋 Dynamic Env Vars:"
+          echo "================================"
+          echo "DEPLOY_TAG: $DEPLOY_TAG"
+          echo "BUILD_TIME: $BUILD_TIME"
+          echo "COMMIT_SHORT: $COMMIT_SHORT"
+          echo "================================"
+          echo ""
+          echo "👆 No step id needed — just use \$VAR directly!"
+
+      # ── Step 3: Modify an env var ──
+      - name: 🔄 Override env var
+        run: |
+          echo "Before: DEPLOY_TAG=$DEPLOY_TAG"
+          echo "DEPLOY_TAG=hotfix-$(date +%Y%m%d)" >> $GITHUB_ENV
+          echo "After this step, DEPLOY_TAG will be updated"
+
+      - name: 📋 Verify override
+        run: |
+          echo "DEPLOY_TAG is now: $DEPLOY_TAG"
+          echo "  👆 Updated by the previous step!"
+
+      # ── Step 4: Multi-line values ──
+      - name: 📝 Set multi-line env var
+        run: |
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "## What's New" >> $GITHUB_ENV
+          echo "- Fixed bug #123" >> $GITHUB_ENV
+          echo "- Added feature X" >> $GITHUB_ENV
+          echo "- Performance improved by 30%" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: 📋 Read multi-line value
+        run: |
+          echo "Release Notes:"
+          echo "$RELEASE_NOTES"

@@ -1,0 +1,67 @@
+Core Features.
+
+1. Workflow -> job -> step
+  
+   Example: 
+   
+   name: 
+   
+   on: 
+       workflow_dispatch: 
+       
+   jobs:
+       say_hello: 
+         runs-on: 
+         steps:
+             - name:
+               run: 
+               
+2. steps type
+   
+it can be the shell command , script or third-party workflow
+
+3. wokflow structure
+
+DAG ( directed acyclic graph ) over here we will tell the needs so that... the workflow will run according to us as each job is running in parallel. 
+
+4. triggering evants
+
+trigger manually
+push to branch 
+create / update pull request
+cron schedule
+
+5. environment varialbes Scope 
+
+- workflow 
+- job 
+- step
+
+6. Passing variables
+
+intra-job output -> input 
+- write to $GITHUB_OUTPUT
+- reference with ${{}} syntax
+
+intra-job env var:
+- write to $GITHUB_ENV
+- Reference with $VAR
+
+iner-job output -> input
+- wirte to $GITHUB_OUTPUT
+- reference in job "outputs"
+- set needs
+-reference with ${{}}
+
+9. secrets and variables.
+
+
+other things
+
+.github -> run & events metadata ( repo , ref , sha , even_name , etc )
+env
+matrix
+strategy
+job
+runner
+inputs

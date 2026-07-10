@@ -1,0 +1,58 @@
+# ============================================================
+# 01 - Hello World
+# ============================================================
+# 📚 Module: 01 - Workflow Fundamentals
+#
+# This is the simplest possible GitHub Actions workflow.
+# It demonstrates the 3-level hierarchy:
+#   WORKFLOW → JOB → STEP
+#
+# 🧪 How to run:
+#   1. Copy this file to your repo's .github/workflows/
+#   2. Push to GitHub
+#   3. Go to Actions tab → "01 - Hello World" → Run workflow
+# ============================================================
+
+name: 01 - Hello World
+
+# ──────────────────────────────────────
+# TRIGGER: Manual only (workflow_dispatch)
+# This lets you click "Run workflow" in the GitHub UI
+# ──────────────────────────────────────
+on:
+  workflow_dispatch:
+
+# ──────────────────────────────────────
+# JOBS: Each job runs on its own fresh VM
+# ──────────────────────────────────────
+jobs:
+  say_hello:
+    # Which machine to run on (GitHub provides this for free)
+    runs-on: ubuntu-latest
+
+    # STEPS: Run sequentially inside this job
+    steps:
+      # Step 1: Print a greeting
+      - name: 👋 Greet the world
+        run: echo "Hello, GitHub Actions! 🚀"
+
+      # Step 2: Show system info
+      - name: 📋 Show runner info
+        run: |
+          echo "🖥️  OS: $(uname -s)"
+          echo "🏗️  Architecture: $(uname -m)"
+          echo "📅  Date: $(date)"
+          echo "📂  Working directory: $(pwd)"
+
+      # Step 3: Prove steps share the same VM
+      - name: 🔗 Prove steps share the same environment
+        run: |
+          echo "Creating a file in Step 3..."
+          echo "I was created in Step 3" > /tmp/shared-file.txt
+
+      - name: ✅ Read file from previous step
+        run: |
+          echo "Reading file created in Step 3..."
+          cat /tmp/shared-file.txt
+          echo ""
+          echo "✅ This proves steps in the SAME JOB share the same VM!"

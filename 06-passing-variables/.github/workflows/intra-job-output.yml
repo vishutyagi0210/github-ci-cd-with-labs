@@ -1,0 +1,61 @@
+# ============================================================
+# 06 - Intra-Job Output (GITHUB_OUTPUT)
+# ============================================================
+# 📚 Module: 06 - Passing Variables
+#
+# Demonstrates: passing values between steps using
+# $GITHUB_OUTPUT and step id references
+# ============================================================
+
+name: 06 - Intra-Job Output
+
+on:
+  workflow_dispatch:
+
+jobs:
+  output_demo:
+    runs-on: ubuntu-latest
+    steps:
+      # ── Step 1: Generate some values ──
+      - name: 📤 Generate build info
+        id: build_info                    # 👈 Required for referencing
+        run: |
+          # Write outputs (key=value format)
+          echo "version=2.5.0" >> $GITHUB_OUTPUT
+          echo "build_number=$(date +%Y%m%d%H%M)" >> $GITHUB_OUTPUT
+          echo "commit_short=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "✅ Outputs written to GITHUB_OUTPUT"
+
+      # ── Step 2: Read those values ──
+      - name: 📥 Read build info
+        run: |
+          echo "================================"
+          echo "📥 Reading outputs from build_info step:"
+          echo "================================"
+          echo "Version: ${{ steps.build_info.outputs.version }}"
+          echo "Build #: ${{ steps.build_info.outputs.build_number }}"
+          echo "Commit:  ${{ steps.build_info.outputs.commit_short }}"
+          echo "================================"
+
+      # ── Step 3: Use in conditional logic ──
+      - name: 🔀 Use output in condition
+        if: ${{ steps.build_info.outputs.version == '2.5.0' }}
+        run: echo "🎯 Version 2.5.0 detected — applying special config!"
+
+      # ── Step 4: Multiple producers ──
+      - name: 📤 Generate environment info
+        id: env_info
+        run: |
+          echo "target_env=staging" >> $GITHUB_OUTPUT
+          echo "replicas=3" >> $GITHUB_OUTPUT
+
+      - name: 📋 Summary
+        run: |
+          echo "================================"
+          echo "📋 Full Build Summary:"
+          echo "================================"
+          echo "App v${{ steps.build_info.outputs.version }}"
+          echo "Build #${{ steps.build_info.outputs.build_number }}"
+          echo "Deploying to: ${{ steps.env_info.outputs.target_env }}"
+          echo "Replicas: ${{ steps.env_info.outputs.replicas }}"
+          echo "================================"

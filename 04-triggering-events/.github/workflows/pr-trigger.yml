@@ -1,0 +1,47 @@
+# ============================================================
+# 04 - Pull Request Trigger Demo
+# ============================================================
+# 📚 Module: 04 - Triggering Events
+#
+# Demonstrates: pull_request trigger with activity types
+# ============================================================
+
+name: 04 - PR Trigger
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main                   # Only PRs targeting main
+
+  # Also allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  pr_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 PR event details
+        run: |
+          echo "================================"
+          echo "📋 Pull Request Details:"
+          echo "================================"
+          echo "🔀 PR Number: ${{ github.event.pull_request.number }}"
+          echo "📌 PR Title: ${{ github.event.pull_request.title }}"
+          echo "👤 Author: ${{ github.event.pull_request.user.login }}"
+          echo "🔀 Head Branch: ${{ github.head_ref }}"
+          echo "🎯 Base Branch: ${{ github.base_ref }}"
+          echo "📊 Event Action: ${{ github.event.action }}"
+          echo "================================"
+
+      - name: 🧪 Simulate CI checks
+        run: |
+          echo "🔍 Running lint check..."
+          sleep 1
+          echo "✅ Lint passed"
+          echo ""
+          echo "🧪 Running tests..."
+          sleep 1
+          echo "✅ Tests passed (15/15)"
+          echo ""
+          echo "✅ All CI checks passed for this PR!"

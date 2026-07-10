@@ -1,0 +1,110 @@
+# ============================================================
+# 11 - Matrix and Conditionals Demo
+# ============================================================
+# 📚 Module: 11 - Matrix and Conditionals
+#
+# Demonstrates:
+#   - Matrix strategy (multi-OS × multi-version)
+#   - fail-fast control
+#   - Conditional steps with if:
+#   - Concurrency groups
+# ============================================================
+
+name: 11 - Matrix and Conditionals
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_deploy:
+        description: 'Skip deployment step?'
+        type: boolean
+        default: false
+
+# ── Concurrency: only one run per branch ──
+concurrency:
+  group: matrix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────
+  # Matrix Job: Test on multiple OS × Node versions
+  # ──────────────────────────────────────
+  test:
+    strategy:
+      fail-fast: false              # Don't cancel others if one fails
+      max-parallel: 3               # Run at most 3 simultaneously
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [18, 20, 22]
+        exclude:
+          - os: windows-latest
+            node-version: 18        # Skip Windows + Node 18
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "🖥️ Matrix info"
+        shell: bash
+        run: |
+          echo "================================"
+          echo "🖥️ OS: ${{ matrix.os }}"
+          echo "🟢 Node: ${{ matrix.node-version }}"
+          echo "================================"
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: ✅ Verify Node
+        shell: bash
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "OS: ${{ runner.os }}"
+
+      # ── Conditional: only on Linux ──
+      - name: 🐧 Linux-only step
+        if: runner.os == 'Linux'
+        run: echo "🐧 This step only runs on Linux!"
+
+      # ── Conditional: only on Windows ──
+      - name: 🪟 Windows-only step
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "🪟 This step only runs on Windows!"
+
+      # ── Conditional: only Node 22 ──
+      - name: 🆕 Node 22 experimental features
+        if: matrix.node-version == 22
+        shell: bash
+        run: echo "🆕 Running experimental checks for Node 22"
+
+  # ──────────────────────────────────────
+  # Deploy Job (conditional on input)
+  # ──────────────────────────────────────
+  deploy:
+    needs: test
+    if: ${{ github.event.inputs.skip_deploy != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploy
+        run: |
+          echo "🚀 All matrix tests passed!"
+          echo "🚀 Deploying..."
+          echo "✅ Deployed!"
+
+      # ── Always-run step (cleanup) ──
+      - name: 🧹 Cleanup (always runs)
+        if: always()
+        run: echo "🧹 Cleanup complete (this runs even if deploy fails)"
+
+  # ──────────────────────────────────────
+  # Skipped Deploy Message
+  # ──────────────────────────────────────
+  skip-message:
+    needs: test
+    if: ${{ github.event.inputs.skip_deploy == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏭️ Deploy skipped
+        run: echo "⏭️ Deployment was skipped by user input"

@@ -1,0 +1,110 @@
+# ============================================================
+# 05 - Environment Variable Scopes Demo
+# ============================================================
+# 📚 Module: 05 - Environment Variables
+#
+# Demonstrates all 3 env scopes: workflow, job, step
+# and shows how narrower scope overrides wider scope
+# ============================================================
+
+name: 05 - Env Scopes
+
+on:
+  workflow_dispatch:
+
+# ──────────────────────────────────────
+# 1️⃣ WORKFLOW level env (available to ALL jobs and steps)
+# ──────────────────────────────────────
+env:
+  APP_NAME: "my-awesome-app"
+  APP_VERSION: "1.0.0"
+  SCOPE_TEST: "I am from WORKFLOW"
+
+jobs:
+  # ──────────────────────────────────────
+  # Job 1: Show workflow + job env
+  # ──────────────────────────────────────
+  job_with_env:
+    runs-on: ubuntu-latest
+
+    # 2️⃣ JOB level env
+    env:
+      NODE_ENV: "production"
+      SCOPE_TEST: "I am from JOB"       # 👈 Overrides workflow
+
+    steps:
+      - name: 📋 Show inherited env
+        run: |
+          echo "================================"
+          echo "📋 Job-Level Env Demo"
+          echo "================================"
+          echo "APP_NAME (workflow): $APP_NAME"
+          echo "APP_VERSION (workflow): $APP_VERSION"
+          echo "NODE_ENV (job): $NODE_ENV"
+          echo "SCOPE_TEST: $SCOPE_TEST"
+          echo "  👆 This comes from JOB level (overrides workflow)"
+          echo "================================"
+
+      # 3️⃣ STEP level env
+      - name: 📋 Step-level override
+        env:
+          SCOPE_TEST: "I am from STEP"    # 👈 Overrides job AND workflow
+          STEP_ONLY: "I only exist here"
+        run: |
+          echo "================================"
+          echo "📋 Step-Level Env Demo"
+          echo "================================"
+          echo "SCOPE_TEST: $SCOPE_TEST"
+          echo "  👆 This comes from STEP level (overrides job + workflow)"
+          echo "STEP_ONLY: $STEP_ONLY"
+          echo "APP_NAME (still inherited): $APP_NAME"
+          echo "NODE_ENV (still inherited): $NODE_ENV"
+          echo "================================"
+
+      - name: 📋 After step override
+        run: |
+          echo "SCOPE_TEST: $SCOPE_TEST"
+          echo "  👆 Back to JOB level (step env only lasts one step)"
+          echo "STEP_ONLY: ${STEP_ONLY:-(not set)}"
+          echo "  👆 Gone! Step-level env doesn't leak"
+
+  # ──────────────────────────────────────
+  # Job 2: Prove jobs are isolated
+  # ──────────────────────────────────────
+  isolated_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 Show this job's env
+        run: |
+          echo "================================"
+          echo "📋 Job Isolation Demo"
+          echo "================================"
+          echo "APP_NAME (workflow): $APP_NAME"
+          echo "  👆 Workflow env is available"
+          echo "NODE_ENV: ${NODE_ENV:-(not set)}"
+          echo "  👆 Job env from job_with_env is NOT available here!"
+          echo "SCOPE_TEST: $SCOPE_TEST"
+          echo "  👆 Falls back to WORKFLOW level"
+          echo "================================"
+
+  # ──────────────────────────────────────
+  # Job 3: Default GitHub env vars
+  # ──────────────────────────────────────
+  github_defaults:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 GitHub's built-in env vars
+        run: |
+          echo "================================"
+          echo "📋 Default GitHub Env Vars"
+          echo "================================"
+          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+          echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
+          echo "GITHUB_RUN_ID: $GITHUB_RUN_ID"
+          echo "GITHUB_RUN_NUMBER: $GITHUB_RUN_NUMBER"
+          echo "RUNNER_OS: $RUNNER_OS"
+          echo "RUNNER_ARCH: $RUNNER_ARCH"
+          echo "================================"

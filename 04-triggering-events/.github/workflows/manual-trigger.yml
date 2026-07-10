@@ -1,0 +1,65 @@
+# ============================================================
+# 04 - Manual Trigger Demo
+# ============================================================
+# 📚 Module: 04 - Triggering Events
+#
+# Demonstrates: workflow_dispatch with user inputs
+# The user can select options when running from the UI
+# ============================================================
+
+name: 04 - Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '🌍 Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+      message:
+        description: '💬 Custom message'
+        required: false
+        default: 'Hello from manual trigger!'
+        type: string
+
+      debug_mode:
+        description: '🐛 Enable debug output?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 Show inputs
+        run: |
+          echo "================================"
+          echo "📋 Workflow Inputs:"
+          echo "================================"
+          echo "🌍 Environment: ${{ github.event.inputs.environment }}"
+          echo "💬 Message: ${{ github.event.inputs.message }}"
+          echo "🐛 Debug: ${{ github.event.inputs.debug_mode }}"
+          echo "================================"
+
+      - name: 🚀 Simulate deployment
+        run: |
+          ENV="${{ github.event.inputs.environment }}"
+          echo "🚀 Deploying to $ENV..."
+          sleep 2
+          echo "✅ Deployed to $ENV successfully!"
+
+      - name: 🐛 Debug info (conditional)
+        if: ${{ github.event.inputs.debug_mode == 'true' }}
+        run: |
+          echo "🐛 DEBUG MODE ENABLED"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"

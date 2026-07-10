@@ -1,0 +1,77 @@
+# ============================================================
+# 12 - Permissions Demo
+# ============================================================
+# 📚 Module: 12 - Permissions and Auth
+#
+# Demonstrates: explicit GITHUB_TOKEN permissions
+# and how to use the token for API calls
+# ============================================================
+
+name: 12 - Permissions Demo
+
+on:
+  workflow_dispatch:
+
+# ── Workflow-level: minimum permissions ──
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  # ──────────────────────────────────────
+  # Job 1: Read-only operations
+  # ──────────────────────────────────────
+  readonly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout (needs contents: read)"
+        uses: actions/checkout@v4
+
+      - name: 📋 Show token permissions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "================================"
+          echo "🔑 GITHUB_TOKEN Info:"
+          echo "================================"
+          echo "Token is set: $([ -n "$GH_TOKEN" ] && echo 'YES' || echo 'NO')"
+          echo "Token length: ${#GH_TOKEN}"
+          echo ""
+          echo "📋 Current permissions:"
+          echo "  contents: read ✅"
+          echo "  actions:  read ✅"
+          echo "  (everything else: none)"
+          echo "================================"
+
+      - name: 📊 Use token for API call
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching repo info via API..."
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}" \
+            | jq '{name: .name, visibility: .visibility, default_branch: .default_branch}' \
+            || echo "API call completed (jq may not format if private repo)"
+
+  # ──────────────────────────────────────
+  # Job 2: With elevated permissions
+  # ──────────────────────────────────────
+  with_write:
+    runs-on: ubuntu-latest
+    # Override workflow-level permissions for THIS job
+    permissions:
+      contents: read
+      issues: write                     # 👈 Can create issues
+    steps:
+      - name: 📋 Elevated permissions
+        run: |
+          echo "================================"
+          echo "🔑 This job has:"
+          echo "  contents: read ✅"
+          echo "  issues: write ✅"
+          echo "================================"
+          echo ""
+          echo "Could create issues with:"
+          echo '  gh issue create --title "Auto issue" --body "Created by CI"'
+          echo ""
+          echo "(Not actually creating to avoid spam)"

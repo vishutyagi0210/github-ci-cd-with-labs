@@ -1,0 +1,50 @@
+# ============================================================
+# 04 - Push Trigger Demo
+# ============================================================
+# 📚 Module: 04 - Triggering Events
+#
+# Demonstrates: push trigger with branch and path filters
+# ⚠️ Also has workflow_dispatch so you can test manually
+# ============================================================
+
+name: 04 - Push Trigger
+
+on:
+  # ── Primary trigger: push to specific branches ──
+  push:
+    branches:
+      - main                   # Only main branch
+      - 'feature/**'           # Any feature/* branch
+    paths:
+      - 'src/**'               # Only when src/ files change
+      - '*.js'                 # Or root JS files change
+    paths-ignore:
+      - '**.md'                # Ignore markdown files
+
+  # ── Also allow manual trigger for testing ──
+  workflow_dispatch:
+
+jobs:
+  on_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 Push event details
+        run: |
+          echo "================================"
+          echo "📋 Push Event Details:"
+          echo "================================"
+          echo "📌 Ref: ${{ github.ref }}"
+          echo "📌 Branch: ${{ github.ref_name }}"
+          echo "📌 SHA: ${{ github.sha }}"
+          echo "📌 Pusher: ${{ github.actor }}"
+          echo "📌 Commit message: ${{ github.event.head_commit.message }}"
+          echo "================================"
+
+      - name: 🔀 Branch-specific logic
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          if [ "$BRANCH" = "main" ]; then
+            echo "🚀 This push is to MAIN — triggering production build"
+          else
+            echo "🔧 This push is to $BRANCH — triggering dev build"
+          fi

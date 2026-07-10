@@ -1,0 +1,54 @@
+# ============================================================
+# 04 - Cron Schedule Trigger Demo
+# ============================================================
+# 📚 Module: 04 - Triggering Events
+#
+# Demonstrates: scheduled cron trigger
+# This runs every Sunday at midnight UTC
+# ============================================================
+
+name: 04 - Cron Trigger
+
+on:
+  schedule:
+    # ┌─── minute (0)
+    # │ ┌─── hour (0 = midnight)
+    # │ │ ┌─── day of month (*)
+    # │ │ │ ┌─── month (*)
+    # │ │ │ │ ┌─── day of week (0 = Sunday)
+    # │ │ │ │ │
+    - cron: '0 0 * * 0'        # Every Sunday at midnight UTC
+
+  # Also allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  weekly_cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 Schedule info
+        run: |
+          echo "================================"
+          echo "⏰ Scheduled Job Running!"
+          echo "================================"
+          echo "📅 Current time (UTC): $(date -u)"
+          echo "🔄 Trigger: ${{ github.event_name }}"
+          echo "================================"
+
+      - name: 🧹 Simulate weekly cleanup
+        run: |
+          echo "🧹 Running weekly cleanup tasks..."
+          echo ""
+          echo "  📁 Cleaning temp files..."
+          sleep 1
+          echo "  ✅ Temp files cleaned"
+          echo ""
+          echo "  📊 Generating weekly report..."
+          sleep 1
+          echo "  ✅ Report generated"
+          echo ""
+          echo "  🔍 Checking for stale resources..."
+          sleep 1
+          echo "  ✅ No stale resources found"
+          echo ""
+          echo "🎉 Weekly cleanup complete!"

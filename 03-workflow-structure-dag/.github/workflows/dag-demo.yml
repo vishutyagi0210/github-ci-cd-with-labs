@@ -1,0 +1,88 @@
+# ============================================================
+# 03 - DAG Demo (Diamond Pattern)
+# ============================================================
+# 📚 Module: 03 - Workflow Structure (DAG)
+#
+# This workflow demonstrates a diamond-shaped DAG:
+#
+#       ┌─── Unit Test ───┐
+#  Lint ─┤                 ├─── Deploy
+#       └─── Int Test  ───┘
+#
+# Lint runs first, then Unit & Integration tests run PARALLEL,
+# then Deploy runs after BOTH tests pass.
+# ============================================================
+
+name: 03 - DAG Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # ──────────────────────────────────────
+  # JOB 1: Lint (runs first — no `needs`)
+  # ──────────────────────────────────────
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 Linting code
+        run: |
+          echo "⏰ Started at: $(date +%T)"
+          echo "🔍 Running linter..."
+          sleep 3
+          echo "✅ Lint passed!"
+          echo "⏰ Finished at: $(date +%T)"
+
+  # ──────────────────────────────────────
+  # JOB 2: Unit Tests (waits for lint)
+  # ──────────────────────────────────────
+  unit-test:
+    needs: lint                          # 👈 Depends on lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧪 Running unit tests
+        run: |
+          echo "⏰ Started at: $(date +%T)"
+          echo "🧪 Running unit tests..."
+          sleep 5
+          echo "✅ 42 tests passed"
+          echo "⏰ Finished at: $(date +%T)"
+
+  # ──────────────────────────────────────
+  # JOB 3: Integration Tests (waits for lint)
+  # Runs PARALLEL with unit-test!
+  # ──────────────────────────────────────
+  integration-test:
+    needs: lint                          # 👈 Also depends on lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔗 Running integration tests
+        run: |
+          echo "⏰ Started at: $(date +%T)"
+          echo "🔗 Running integration tests..."
+          sleep 4
+          echo "✅ 12 integration tests passed"
+          echo "⏰ Finished at: $(date +%T)"
+
+  # ──────────────────────────────────────
+  # JOB 4: Deploy (waits for BOTH tests)
+  # ──────────────────────────────────────
+  deploy:
+    needs: [unit-test, integration-test] # 👈 Waits for BOTH
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploying application
+        run: |
+          echo "⏰ Started at: $(date +%T)"
+          echo "🚀 Deploying to production..."
+          sleep 2
+          echo "✅ Deployment complete!"
+          echo "⏰ Finished at: $(date +%T)"
+          echo ""
+          echo "================================"
+          echo "📊 DAG Execution Summary:"
+          echo "  1. lint          → ran first"
+          echo "  2. unit-test     → ran after lint (PARALLEL with int-test)"
+          echo "  3. int-test      → ran after lint (PARALLEL with unit-test)"
+          echo "  4. deploy        → ran after BOTH tests passed"
+          echo "================================"

@@ -1,0 +1,57 @@
+# ============================================================
+# 02 - Shell Commands Demo
+# ============================================================
+# 📚 Module: 02 - Step Types
+#
+# Demonstrates: inline shell commands, multi-line commands,
+# and using different shells (bash, sh, python)
+# ============================================================
+
+name: 02 - Shell Commands
+
+on:
+  workflow_dispatch:
+
+jobs:
+  shell_demos:
+    runs-on: ubuntu-latest
+    steps:
+      # ── Single-line command ──
+      - name: 🔹 Single-line command
+        run: echo "This is a single-line shell command"
+
+      # ── Multi-line commands (pipe |) ──
+      - name: 🔹 Multi-line commands
+        run: |
+          echo "Line 1: Hello"
+          echo "Line 2: from a multi-line"
+          echo "Line 3: shell command block"
+          echo ""
+          echo "Current date: $(date)"
+          echo "Current user: $(whoami)"
+
+      # ── Using bash explicitly ──
+      - name: 🔹 Explicit bash shell
+        shell: bash
+        run: |
+          # Bash-specific features work here
+          arr=("apple" "banana" "cherry")
+          for fruit in "${arr[@]}"; do
+            echo "🍎 Fruit: $fruit"
+          done
+
+      # ── Using Python as the shell ──
+      - name: 🐍 Python as shell
+        shell: python
+        run: |
+          import platform
+          import sys
+          print(f"Python version: {sys.version}")
+          print(f"Platform: {platform.platform()}")
+          print(f"2 + 2 = {2 + 2}")
+
+      # ── Command with environment variable ──
+      - name: 🔹 Using env in commands
+        env:
+          GREETING: "Hello from env!"
+        run: echo "$GREETING"

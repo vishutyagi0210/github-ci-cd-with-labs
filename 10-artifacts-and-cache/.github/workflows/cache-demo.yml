@@ -1,0 +1,75 @@
+# ============================================================
+# 10 - Cache Demo
+# ============================================================
+# 📚 Module: 10 - Artifacts and Cache
+#
+# Demonstrates dependency caching with actions/cache
+# First run: cache MISS → install (slow)
+# Second run: cache HIT → skip install (fast!)
+# ============================================================
+
+name: 10 - Cache Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cached_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      # ── Cache npm dependencies ──
+      - name: ⚡ Cache npm dependencies
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          # What directory to cache
+          path: ~/.npm
+          # Cache key (includes OS and lock file hash)
+          key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          # Fallback keys if exact match not found
+          restore-keys: |
+            npm-${{ runner.os }}-
+
+      # ── Show cache result ──
+      - name: 📋 Cache result
+        run: |
+          echo "================================"
+          if [ "${{ steps.cache-npm.outputs.cache-hit }}" = "true" ]; then
+            echo "⚡ CACHE HIT — dependencies restored from cache!"
+            echo "   (npm install will be fast)"
+          else
+            echo "❌ CACHE MISS — first run or lock file changed"
+            echo "   (npm install will download everything)"
+          fi
+          echo "================================"
+
+      # ── Simulate install (uses cache if available) ──
+      - name: 📦 Install dependencies
+        run: |
+          echo "Running npm install..."
+          # In a real project: npm ci
+          echo "✅ Dependencies ready!"
+
+      # ── Another cache example: pip ──
+      - name: ⚡ Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: 📋 Summary
+        run: |
+          echo "================================"
+          echo "📋 Cache Demo Summary"
+          echo "================================"
+          echo "1. npm cache: key = npm-${{ runner.os }}-<hash>"
+          echo "2. pip cache: key = pip-${{ runner.os }}-<hash>"
+          echo ""
+          echo "🔄 Run this workflow again — it'll be faster!"
+          echo "   (cache will be hit on the second run)"
+          echo "================================"

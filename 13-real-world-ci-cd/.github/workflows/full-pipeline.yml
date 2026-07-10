@@ -1,0 +1,302 @@
+# ============================================================
+# 13 - Full CI/CD Pipeline (Capstone)
+# ============================================================
+# 📚 Module: 13 - Real-World CI/CD
+#
+# This is a production-style pipeline that combines
+# EVERYTHING from modules 01-12:
+#
+#   TRIGGER → LINT ─┬→ TEST → BUILD → STAGING → PRODUCTION
+#                    └→ SECURITY ──┘
+#
+# Features used:
+#   ✅ Workflow triggers (push + manual)
+#   ✅ DAG with needs
+#   ✅ Environment variables (3 scopes)
+#   ✅ Inter-job outputs
+#   ✅ Artifacts (upload/download)
+#   ✅ Matrix strategy
+#   ✅ Conditionals (if:)
+#   ✅ Concurrency control
+#   ✅ Explicit permissions
+#   ✅ GitHub contexts
+# ============================================================
+
+name: 13 - Full CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_env:
+        description: 'Deploy to which environment?'
+        type: choice
+        default: 'staging'
+        options:
+          - staging
+          - production
+
+# ── Concurrency: one pipeline per branch ──
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+# ── Workflow-level env ──
+env:
+  APP_NAME: "my-awesome-app"
+  NODE_VERSION: "20"
+
+# ── Least privilege permissions ──
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  # ════════════════════════════════════════
+  # 🔍 STAGE 1: LINT (code quality)
+  # ════════════════════════════════════════
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🔍 Run linter
+        run: |
+          echo "================================"
+          echo "🔍 LINT STAGE"
+          echo "================================"
+          echo "📋 Checking code quality..."
+          echo "  ✅ No unused variables"
+          echo "  ✅ Consistent formatting"
+          echo "  ✅ No console.log in production code"
+          echo "  ✅ Import order correct"
+          echo ""
+          echo "✅ Lint passed! (0 errors, 0 warnings)"
+          echo "================================"
+
+  # ════════════════════════════════════════
+  # 🧪 STAGE 2: TEST (matrix across versions)
+  # ════════════════════════════════════════
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 🧪 Run tests
+        run: |
+          echo "================================"
+          echo "🧪 TEST STAGE (Node ${{ matrix.node-version }})"
+          echo "================================"
+          echo "Running unit tests..."
+          sleep 2
+          echo "  ✅ auth.test.js        (12 tests)"
+          echo "  ✅ api.test.js         (23 tests)"
+          echo "  ✅ utils.test.js       (8 tests)"
+          echo "  ✅ middleware.test.js   (15 tests)"
+          echo ""
+          echo "📊 Coverage: 87.3%"
+          echo "✅ All 58 tests passed on Node ${{ matrix.node-version }}!"
+          echo "================================"
+
+  # ════════════════════════════════════════
+  # 🔒 STAGE 2b: SECURITY (parallel with test)
+  # ════════════════════════════════════════
+  security:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔒 Security scan
+        run: |
+          echo "================================"
+          echo "🔒 SECURITY STAGE"
+          echo "================================"
+          echo "Scanning dependencies..."
+          sleep 2
+          echo "  ✅ No critical vulnerabilities"
+          echo "  ✅ No high vulnerabilities"
+          echo "  ⚠️  2 low-risk advisories (informational)"
+          echo ""
+          echo "Scanning code patterns..."
+          echo "  ✅ No hardcoded secrets"
+          echo "  ✅ No SQL injection patterns"
+          echo "  ✅ No XSS vulnerabilities"
+          echo ""
+          echo "✅ Security scan passed!"
+          echo "================================"
+
+  # ════════════════════════════════════════
+  # 📦 STAGE 3: BUILD (produces artifact)
+  # ════════════════════════════════════════
+  build:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      build_id: ${{ steps.version.outputs.build_id }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Generate version
+        id: version
+        run: |
+          VERSION="1.0.${{ github.run_number }}"
+          BUILD_ID="${{ github.sha }}-$(date +%Y%m%d%H%M%S)"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "build_id=${BUILD_ID}" >> $GITHUB_OUTPUT
+          echo "APP_VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: 📦 Build application
+        run: |
+          echo "================================"
+          echo "📦 BUILD STAGE"
+          echo "================================"
+          echo "Building ${{ env.APP_NAME }} v${APP_VERSION}..."
+          mkdir -p dist
+          echo "// Built: $(date -u)" > dist/app.js
+          echo "// Version: ${APP_VERSION}" >> dist/app.js
+          echo "// Commit: ${{ github.sha }}" >> dist/app.js
+          echo "console.log('${{ env.APP_NAME }} v${APP_VERSION} running!');" >> dist/app.js
+          echo '{"name":"${{ env.APP_NAME }}","version":"'${APP_VERSION}'","commit":"${{ github.sha }}","built":"'$(date -u)'"}' > dist/manifest.json
+          echo ""
+          echo "📁 Build output:"
+          ls -la dist/
+          echo ""
+          echo "✅ Build complete!"
+          echo "================================"
+
+      - name: 📤 Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.version.outputs.version }}
+          path: dist/
+          retention-days: 30
+
+  # ════════════════════════════════════════
+  # 🟡 STAGE 4: DEPLOY TO STAGING
+  # ════════════════════════════════════════
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    # environment: staging          # Uncomment when you have environments set up
+    env:
+      DEPLOY_ENV: staging
+    steps:
+      - name: 📥 Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.build.outputs.version }}
+          path: ./deploy
+
+      - name: 🟡 Deploy to Staging
+        run: |
+          echo "================================"
+          echo "🟡 DEPLOY STAGING"
+          echo "================================"
+          echo "📋 Deployment Details:"
+          echo "  App:         ${{ env.APP_NAME }}"
+          echo "  Version:     ${{ needs.build.outputs.version }}"
+          echo "  Build ID:    ${{ needs.build.outputs.build_id }}"
+          echo "  Environment: $DEPLOY_ENV"
+          echo "  Actor:       ${{ github.actor }}"
+          echo "  Commit:      ${{ github.sha }}"
+          echo ""
+          echo "📦 Artifact contents:"
+          ls -la ./deploy/
+          echo ""
+          echo "📄 Manifest:"
+          cat ./deploy/manifest.json
+          echo ""
+          echo ""
+          echo "🚀 Deploying to staging..."
+          sleep 3
+          echo "✅ Deployed to staging successfully!"
+          echo "🌍 URL: https://staging.example.com"
+          echo "================================"
+
+      - name: 🏥 Health check
+        run: |
+          echo "🏥 Running health checks..."
+          sleep 2
+          echo "  ✅ /health — 200 OK"
+          echo "  ✅ /api/status — 200 OK"
+          echo "  ✅ Response time < 200ms"
+          echo "✅ Staging is healthy!"
+
+  # ════════════════════════════════════════
+  # 🟢 STAGE 5: DEPLOY TO PRODUCTION
+  # ════════════════════════════════════════
+  deploy-production:
+    needs: [build, deploy-staging]
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'     # Only from main branch
+    # environment: production         # Uncomment for approval gates
+    env:
+      DEPLOY_ENV: production
+    steps:
+      - name: 📥 Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.build.outputs.version }}
+          path: ./deploy
+
+      - name: 🟢 Deploy to Production
+        run: |
+          echo "================================"
+          echo "🟢 DEPLOY PRODUCTION"
+          echo "================================"
+          echo "📋 Deployment Details:"
+          echo "  App:         ${{ env.APP_NAME }}"
+          echo "  Version:     ${{ needs.build.outputs.version }}"
+          echo "  Environment: $DEPLOY_ENV"
+          echo "  Actor:       ${{ github.actor }}"
+          echo ""
+          echo "🚀 Deploying to production..."
+          sleep 3
+          echo "✅ Deployed to production successfully!"
+          echo "🌍 URL: https://www.example.com"
+          echo "================================"
+
+      - name: 🏥 Production health check
+        run: |
+          echo "🏥 Running production health checks..."
+          sleep 2
+          echo "  ✅ /health — 200 OK"
+          echo "  ✅ /api/status — 200 OK"
+          echo "  ✅ Database connected"
+          echo "  ✅ Cache warm"
+          echo "✅ Production is healthy!"
+
+      - name: 📢 Notify
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          VERSION="${{ needs.build.outputs.version }}"
+          if [ "$STATUS" = "success" ]; then
+            echo "📢 ✅ Production deploy SUCCEEDED"
+            echo "   ${{ env.APP_NAME }} v${VERSION} is live!"
+          else
+            echo "📢 ❌ Production deploy FAILED"
+            echo "   Check logs for details"
+          fi

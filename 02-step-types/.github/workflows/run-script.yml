@@ -1,0 +1,27 @@
+# ============================================================
+# 02 - Run Script Demo
+# ============================================================
+# 📚 Module: 02 - Step Types
+#
+# Demonstrates: running an external script file.
+# ⚠️ MUST checkout repo first — the VM starts empty!
+# ============================================================
+
+name: 02 - Run Script
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run_external_script:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout — REQUIRED before running scripts
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Make the script executable and run it
+      - name: 🚀 Run the build script
+        run: |
+          chmod +x ./02-step-types/scripts/build.sh
+          bash ./02-step-types/scripts/build.sh

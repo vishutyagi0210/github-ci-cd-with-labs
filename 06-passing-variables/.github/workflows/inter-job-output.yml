@@ -1,0 +1,77 @@
+# ============================================================
+# 06 - Inter-Job Output
+# ============================================================
+# 📚 Module: 06 - Passing Variables
+#
+# Demonstrates: passing values between JOBS using
+# job outputs + needs keyword
+#
+# Flow: build → test → deploy
+#   build produces version + artifact_path
+#   test reads them and produces test_result
+#   deploy reads from BOTH build and test
+# ============================================================
+
+name: 06 - Inter-Job Output
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # ──────────────────────────────────────
+  # JOB 1: Build (produces outputs)
+  # ──────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    # 👇 Map step outputs to job outputs
+    outputs:
+      version: ${{ steps.build_step.outputs.version }}
+      artifact_path: ${{ steps.build_step.outputs.artifact_path }}
+    steps:
+      - name: 🔨 Build application
+        id: build_step
+        run: |
+          VERSION="3.2.1"
+          ARTIFACT="dist/app-${VERSION}.tar.gz"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "artifact_path=${ARTIFACT}" >> $GITHUB_OUTPUT
+          echo "✅ Built v${VERSION} at ${ARTIFACT}"
+
+  # ──────────────────────────────────────
+  # JOB 2: Test (consumes build outputs, produces own)
+  # ──────────────────────────────────────
+  test:
+    needs: build                         # 👈 Depend on build
+    runs-on: ubuntu-latest
+    outputs:
+      test_result: ${{ steps.test_step.outputs.result }}
+    steps:
+      - name: 🧪 Test the build
+        id: test_step
+        run: |
+          echo "================================"
+          echo "🧪 Testing version: ${{ needs.build.outputs.version }}"
+          echo "📦 Artifact: ${{ needs.build.outputs.artifact_path }}"
+          echo "================================"
+          sleep 2
+          echo "result=passed" >> $GITHUB_OUTPUT
+          echo "✅ All tests passed!"
+
+  # ──────────────────────────────────────
+  # JOB 3: Deploy (consumes from BOTH jobs)
+  # ──────────────────────────────────────
+  deploy:
+    needs: [build, test]                 # 👈 Depend on BOTH
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploy
+        run: |
+          echo "================================"
+          echo "🚀 Deployment Summary:"
+          echo "================================"
+          echo "Version:  ${{ needs.build.outputs.version }}"
+          echo "Artifact: ${{ needs.build.outputs.artifact_path }}"
+          echo "Tests:    ${{ needs.test.outputs.test_result }}"
+          echo "================================"
+          echo ""
+          echo "✅ Deployed v${{ needs.build.outputs.version }} to production!"

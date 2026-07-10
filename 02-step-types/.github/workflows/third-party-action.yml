@@ -1,0 +1,54 @@
+# ============================================================
+# 02 - Third-Party Action Demo
+# ============================================================
+# 📚 Module: 02 - Step Types
+#
+# Demonstrates: using marketplace actions with `uses:` keyword
+# and passing inputs with `with:`
+# ============================================================
+
+name: 02 - Third-Party Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  use_marketplace_actions:
+    runs-on: ubuntu-latest
+    steps:
+      # ── Action 1: Checkout (most used action in the world) ──
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # ── Action 2: Setup Node.js with specific version ──
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'      # 👈 Input: which version to install
+
+      # ── Verify it worked ──
+      - name: ✅ Verify Node.js
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+
+      # ── Action 3: Setup Python ──
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # ── Verify Python ──
+      - name: ✅ Verify Python
+        run: |
+          echo "Python version: $(python --version)"
+          echo "Pip version: $(pip --version)"
+
+      # ── Summary ──
+      - name: 📊 Summary
+        run: |
+          echo "================================"
+          echo "🎉 All marketplace actions work!"
+          echo "   Node.js: $(node --version)"
+          echo "   Python: $(python --version)"
+          echo "================================"
