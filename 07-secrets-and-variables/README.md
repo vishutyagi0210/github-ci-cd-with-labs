@@ -7,6 +7,7 @@
 ## 🔍 Secrets vs Variables
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph SEC["🔒 Secrets"]
         S1["Encrypted at rest"]
@@ -22,8 +23,6 @@ graph TD
         V4["e.g., app name, region, flags"]
     end
 
-    style SEC fill:#fce4ec,stroke:#c62828
-    style VAR fill:#e3f2fd,stroke:#1565c0
 ```
 
 ---
@@ -31,6 +30,7 @@ graph TD
 ## 🏗️ Where They Live — 3 Levels
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     ORG["🏢 Organization Level"] --> REPO["📁 Repository Level"]
     REPO --> ENV["🌍 Environment Level<br/>(staging, production)"]
@@ -39,9 +39,6 @@ graph TD
     REPO_S["Secrets + Variables<br/>This repo only"] -.-> REPO
     ENV_S["Secrets + Variables<br/>Only for this environment<br/>+ approval gates"] -.-> ENV
 
-    style ORG fill:#e8eaf6,stroke:#283593
-    style REPO fill:#e3f2fd,stroke:#1565c0
-    style ENV fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ### Precedence (narrower wins):
@@ -114,6 +111,7 @@ jobs:
 ## 🔒 Security Flow
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant DEV as 👤 Developer
     participant UI as 🖥️ GitHub Settings

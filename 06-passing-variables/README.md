@@ -7,6 +7,7 @@
 ## 🔍 The 3 Mechanisms at a Glance
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph INTRA["🟦 Within a Job (Intra-Job)"]
         direction TB
@@ -18,8 +19,6 @@ graph TD
         M3["📤 Job outputs + needs<br/>Job A → Job B"]
     end
 
-    style INTRA fill:#e3f2fd,stroke:#1565c0
-    style INTER fill:#fff3e0,stroke:#e65100
 ```
 
 ---
@@ -27,6 +26,7 @@ graph TD
 ## 1️⃣ Step → Step via `GITHUB_OUTPUT`
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant S1 as Step 1 (Producer)
     participant FILE as $GITHUB_OUTPUT file
@@ -61,6 +61,7 @@ steps:
 ## 2️⃣ Step → Step via `GITHUB_ENV`
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant S1 as Step 1 (Writer)
     participant ENV as $GITHUB_ENV file
@@ -104,6 +105,7 @@ steps:
 ## 3️⃣ Job → Job via `outputs` + `needs`
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant JA as Job A (Producer)
     participant OUT as Job A → outputs

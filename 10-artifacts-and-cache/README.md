@@ -7,6 +7,7 @@
 ## 🔍 Artifacts vs Cache
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph ART["📦 Artifacts"]
         A1["Upload files FROM a job"]
@@ -24,8 +25,6 @@ graph TD
         C5["Use: node_modules, pip, Maven deps"]
     end
 
-    style ART fill:#e3f2fd,stroke:#1565c0
-    style CACHE fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---
@@ -45,6 +44,7 @@ graph TD
 ## 📦 Artifacts Flow
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant JA as 🟦 Job A (Build)
     participant STORE as ☁️ Artifact Storage
@@ -87,6 +87,7 @@ sequenceDiagram
 ## ⚡ Cache Flow
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant WF as ▶️ Workflow Run
     participant CACHE as ☁️ Cache Store

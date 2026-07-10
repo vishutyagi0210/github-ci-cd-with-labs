@@ -7,6 +7,7 @@
 ## 🔍 Authentication Layers
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     AUTH["🔐 Authentication"] --> TOKEN["🔑 GITHUB_TOKEN<br/>(built-in, auto-generated)"]
     AUTH --> PAT["🎫 Personal Access Token<br/>(stored as secret)"]
@@ -24,9 +25,6 @@ graph TD
     OIDC --> O2["AWS, GCP, Azure support"]
     OIDC --> O3["Short-lived tokens"]
 
-    style TOKEN fill:#e3f2fd,stroke:#1565c0
-    style PAT fill:#fff3e0,stroke:#e65100
-    style OIDC fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---
@@ -36,6 +34,7 @@ graph TD
 ### Default vs Explicit:
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     subgraph DEFAULT["Default (permissive)"]
         D1["contents: read ✅"]
@@ -53,8 +52,6 @@ graph LR
 
     DEFAULT -->|"Best practice:<br/>use explicit"| EXPLICIT
 
-    style DEFAULT fill:#ffebee,stroke:#c62828
-    style EXPLICIT fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ### Setting Permissions:
@@ -94,6 +91,7 @@ jobs:
 ## 🪪 OIDC — Keyless Cloud Auth
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant WF as ▶️ GitHub Workflow
     participant GH as 🐙 GitHub OIDC Provider

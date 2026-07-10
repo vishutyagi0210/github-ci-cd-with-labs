@@ -7,6 +7,7 @@
 ## 🔍 The 3 Types at a Glance
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     STEP["🔷 Step"] --> T1["🖥️ Shell Command"]
     STEP --> T2["📄 Script File"]
@@ -16,13 +17,6 @@ graph LR
     T2 --> E2["run: bash ./scripts/deploy.sh"]
     T3 --> E3["uses: actions/checkout@v4"]
 
-    style STEP fill:#1565c0,stroke:#1565c0,color:#fff
-    style T1 fill:#e8eaf6,stroke:#283593
-    style T2 fill:#e8eaf6,stroke:#283593
-    style T3 fill:#e8eaf6,stroke:#283593
-    style E1 fill:#f5f5f5,stroke:#9e9e9e
-    style E2 fill:#f5f5f5,stroke:#9e9e9e
-    style E3 fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 ---
@@ -56,12 +50,12 @@ steps:
 ```
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     R["run:"] --> SHELL["Default: bash"]
     R --> PS["shell: pwsh"]
     R --> PY["shell: python"]
 
-    style R fill:#1565c0,color:#fff
 ```
 
 > You can change the shell with `shell: pwsh` (PowerShell) or `shell: python`.
@@ -94,13 +88,12 @@ steps:
 ## 3️⃣ Marketplace Action (`uses:`)
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     A["uses: owner/action-name@version"] --> B["GitHub downloads the action"]
     B --> C["Action runs inside your job"]
     C --> D["Provides outputs / side-effects"]
 
-    style A fill:#e8eaf6,stroke:#283593
-    style D fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ```yaml
@@ -131,6 +124,7 @@ steps:
 ## ▶️ Execution Flow
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant GH as 🐙 GitHub
     participant VM as 🖥️ Runner VM

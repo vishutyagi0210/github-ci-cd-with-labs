@@ -7,6 +7,7 @@
 ## 🔍 Matrix — The Big Picture
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     MATRIX["strategy:<br/>matrix:"] --> COMBO["Creates all combinations"]
 
@@ -22,11 +23,6 @@ graph TD
     COMBO --> C3
     COMBO --> C4
 
-    style MATRIX fill:#1565c0,stroke:#1565c0,color:#fff
-    style C1 fill:#e3f2fd,stroke:#1565c0
-    style C2 fill:#e3f2fd,stroke:#1565c0
-    style C3 fill:#e8eaf6,stroke:#283593
-    style C4 fill:#e8eaf6,stroke:#283593
 ```
 
 ```yaml
@@ -87,13 +83,11 @@ strategy:
 ```
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     ALL["All Combinations<br/>(3 × 2 = 6)"] --> EXCLUDE["exclude:<br/>macos + node 18"]
     EXCLUDE --> FINAL["Final: 5 jobs"]
 
-    style ALL fill:#e3f2fd,stroke:#1565c0
-    style EXCLUDE fill:#ffebee,stroke:#c62828
-    style FINAL fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---
@@ -158,6 +152,7 @@ steps:
 ### Common `if:` Patterns:
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     IF["if:"] --> SUCCESS["success()<br/>Previous steps passed"]
     IF --> FAILURE["failure()<br/>A step failed"]
@@ -165,10 +160,6 @@ graph TD
     IF --> CANCELLED["cancelled()<br/>Workflow was cancelled"]
     IF --> CUSTOM["Custom expressions<br/>github.ref == 'main'"]
 
-    style IF fill:#1565c0,color:#fff
-    style SUCCESS fill:#e8f5e9,stroke:#2e7d32
-    style FAILURE fill:#ffebee,stroke:#c62828
-    style ALWAYS fill:#fff3e0,stroke:#e65100
 ```
 
 ---
@@ -183,6 +174,7 @@ concurrency:
 ```
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant R1 as Run 1 (commit A)
     participant R2 as Run 2 (commit B)

@@ -7,6 +7,7 @@
 ## 🔍 The Big Picture
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph REPO["📁 Your Repository"]
         direction TB
@@ -33,11 +34,6 @@ graph TD
 
     WF --> WF_INNER
 
-    style REPO fill:#e3f2fd,stroke:#1565c0
-    style WF fill:#fff3e0,stroke:#e65100
-    style J1 fill:#bbdefb,stroke:#1565c0
-    style J2 fill:#bbdefb,stroke:#1565c0
-    style J3 fill:#bbdefb,stroke:#1565c0
 ```
 
 ---
@@ -105,6 +101,7 @@ jobs:
 ## ▶️ How It Executes
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant U as 👤 You
     participant GH as 🐙 GitHub

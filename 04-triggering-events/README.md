@@ -7,6 +7,7 @@
 ## 🔍 All Trigger Types at a Glance
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     ON["on:"] --> MANUAL["🖱️ Manual<br/>workflow_dispatch"]
     ON --> PUSH["⬆️ Push<br/>push"]
@@ -14,12 +15,6 @@ graph TD
     ON --> CRON["⏰ Schedule<br/>schedule"]
     ON --> OTHER["📦 Others<br/>release, issues, etc."]
 
-    style ON fill:#1565c0,stroke:#1565c0,color:#fff
-    style MANUAL fill:#e8f5e9,stroke:#2e7d32
-    style PUSH fill:#e3f2fd,stroke:#1565c0
-    style PR fill:#fff3e0,stroke:#e65100
-    style CRON fill:#fce4ec,stroke:#c62828
-    style OTHER fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 ---
@@ -40,6 +35,7 @@ graph TD
 ## 1️⃣ Manual Trigger (`workflow_dispatch`)
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant U as 👤 You
     participant GH as 🐙 GitHub UI
@@ -75,14 +71,13 @@ on:
 ## 2️⃣ Push Trigger
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     DEV["👤 Developer"] -->|git push| REPO["📁 GitHub Repo"]
     REPO -->|matches branch/path filter?| CHECK{Filter}
     CHECK -->|✅ Yes| RUN["▶️ Run Workflow"]
     CHECK -->|❌ No| SKIP["⏭️ Skip"]
 
-    style RUN fill:#e8f5e9,stroke:#2e7d32
-    style SKIP fill:#ffebee,stroke:#c62828
 ```
 
 ```yaml
@@ -114,6 +109,7 @@ branches + paths = AND logic
 ## 3️⃣ Pull Request Trigger
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     PR["🔀 Pull Request Event"] --> TYPES["Activity Types"]
     TYPES --> OPENED["opened"]
@@ -121,7 +117,6 @@ graph TD
     TYPES --> CLOSED["closed"]
     TYPES --> REVIEW["review_requested"]
 
-    style PR fill:#fff3e0,stroke:#e65100
 ```
 
 ```yaml
@@ -141,14 +136,13 @@ on:
 ## 4️⃣ Schedule (Cron)
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     CRON["⏰ Cron Expression"] --> GH["GitHub checks every ~minute"]
     GH --> MATCH{Time matches?}
     MATCH -->|Yes| RUN["▶️ Run Workflow"]
     MATCH -->|No| WAIT["💤 Wait"]
 
-    style CRON fill:#fce4ec,stroke:#c62828
-    style RUN fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ```yaml
@@ -192,6 +186,7 @@ on:
 ```
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     W["Workflow"] --> T1["push to main"]
     W --> T2["PR to main"]
@@ -203,7 +198,6 @@ graph TD
     T3 --> RUN
     T4 --> RUN
 
-    style RUN fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---

@@ -7,6 +7,7 @@
 ## 🔍 The 3 Scopes — Visual
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph WF["🔄 Workflow Level"]
         WF_ENV["env:<br/>APP_NAME: myapp"]
@@ -27,11 +28,6 @@ graph TD
         end
     end
 
-    style WF fill:#e3f2fd,stroke:#1565c0
-    style J1 fill:#fff3e0,stroke:#e65100
-    style J2 fill:#fff3e0,stroke:#e65100
-    style S1 fill:#e8f5e9,stroke:#2e7d32
-    style S2 fill:#f5f5f5,stroke:#9e9e9e
 ```
 
 ---

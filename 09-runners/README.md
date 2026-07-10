@@ -7,6 +7,7 @@
 ## 🔍 The 3 Types
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     RUNNER["🖥️ Runner"] --> GH["☁️ GitHub-Hosted"]
     RUNNER --> SELF["🏠 Self-Hosted"]
@@ -26,9 +27,6 @@ graph TD
     THIRD --> TH2["✅ Custom specs"]
     THIRD --> TH3["⚠️ Extra cost"]
 
-    style GH fill:#e3f2fd,stroke:#1565c0
-    style SELF fill:#fff3e0,stroke:#e65100
-    style THIRD fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---
@@ -52,6 +50,7 @@ graph TD
 ### Available Machines:
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     subgraph LINUX["🐧 Linux"]
         L1["ubuntu-latest<br/>(Ubuntu 24.04)"]
@@ -69,9 +68,6 @@ graph LR
         W2["windows-2019"]
     end
 
-    style LINUX fill:#e3f2fd,stroke:#1565c0
-    style MAC fill:#f5f5f5,stroke:#9e9e9e
-    style WIN fill:#e8eaf6,stroke:#283593
 ```
 
 ```yaml
@@ -93,6 +89,7 @@ jobs:
 ### Setup Flow:
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant YOU as 👤 You
     participant GH as 🐙 GitHub

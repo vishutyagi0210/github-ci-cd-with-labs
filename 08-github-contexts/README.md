@@ -7,6 +7,7 @@
 ## 🔍 All Contexts at a Glance
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     CTX["${{ ... }}"] --> GH["github.*<br/>Repo, event, SHA, actor"]
     CTX --> ENV["env.*<br/>Environment variables"]
@@ -20,10 +21,6 @@ graph TD
     CTX --> INP["inputs.*<br/>Workflow inputs"]
     CTX --> STRAT["strategy.*<br/>Strategy config"]
 
-    style CTX fill:#1565c0,stroke:#1565c0,color:#fff
-    style GH fill:#e8f5e9,stroke:#2e7d32
-    style RUNNER fill:#fff3e0,stroke:#e65100
-    style SEC fill:#fce4ec,stroke:#c62828
 ```
 
 ---
@@ -71,6 +68,7 @@ strategy:
 ## 🔄 Context Availability by Scope
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     subgraph EVERYWHERE["✅ Available Everywhere"]
         G["github.*"]
@@ -90,9 +88,6 @@ graph TD
         STP["steps.*"]
     end
 
-    style EVERYWHERE fill:#e8f5e9,stroke:#2e7d32
-    style JOB_LEVEL fill:#fff3e0,stroke:#e65100
-    style STEP_LEVEL fill:#e3f2fd,stroke:#1565c0
 ```
 
 ---

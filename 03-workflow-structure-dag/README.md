@@ -9,15 +9,16 @@
 **DAG = Directed Acyclic Graph** — a flow with a direction and no loops.
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     subgraph DEFAULT["❌ Without 'needs' — Everything Parallel"]
         A1["Job A"] ~~~ B1["Job B"] ~~~ C1["Job C"]
     end
 
-    style DEFAULT fill:#ffebee,stroke:#c62828
 ```
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     subgraph CONTROLLED["✅ With 'needs' — You Control the Order"]
         A2["Job A"] --> B2["Job B"]
@@ -26,7 +27,6 @@ graph LR
         C2 --> D2
     end
 
-    style CONTROLLED fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---
@@ -34,6 +34,7 @@ graph LR
 ## 🧬 How `needs` Works
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     LINT["🔍 Lint"] --> TEST["🧪 Test"]
     LINT --> SECURITY["🔒 Security Scan"]
@@ -41,11 +42,6 @@ graph TD
     SECURITY --> BUILD
     BUILD --> DEPLOY["🚀 Deploy"]
 
-    style LINT fill:#e3f2fd,stroke:#1565c0
-    style TEST fill:#e3f2fd,stroke:#1565c0
-    style SECURITY fill:#fce4ec,stroke:#c62828
-    style BUILD fill:#fff3e0,stroke:#e65100
-    style DEPLOY fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ```yaml
@@ -108,6 +104,7 @@ WITH needs (diamond pattern):
 
 ### 🔹 Linear Pipeline
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     A["Build"] --> B["Test"] --> C["Deploy"]
 ```
@@ -118,6 +115,7 @@ needs: test     # deploy waits for test
 
 ### 🔹 Fan-Out / Fan-In (Diamond)
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     A["Build"] --> B["Unit Tests"]
     A --> C["Integration Tests"]
@@ -133,6 +131,7 @@ needs: [unit-tests, int-tests, security]  # deploy waits for ALL 3
 
 ### 🔹 Independent Chains
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     A["Build Frontend"] --> B["Deploy Frontend"]
     C["Build Backend"] --> D["Deploy Backend"]

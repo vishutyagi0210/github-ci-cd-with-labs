@@ -7,6 +7,7 @@
 ## 🔍 The Complete Pipeline
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     TRIGGER["🔀 Push to main<br/>or Manual trigger"] --> LINT
 
@@ -29,15 +30,6 @@ graph TD
     BUILD --> STAGING
     STAGING --> PROD
 
-    style TRIGGER fill:#e8eaf6,stroke:#283593
-    style CI fill:#e3f2fd,stroke:#1565c0
-    style CD fill:#e8f5e9,stroke:#2e7d32
-    style LINT fill:#fff3e0,stroke:#e65100
-    style TEST fill:#e3f2fd,stroke:#1565c0
-    style SECURITY fill:#fce4ec,stroke:#c62828
-    style BUILD fill:#e8eaf6,stroke:#283593
-    style STAGING fill:#fff9c4,stroke:#f9a825
-    style PROD fill:#c8e6c9,stroke:#2e7d32
 ```
 
 ---
@@ -83,6 +75,7 @@ graph TD
 ## 🔄 Execution Timeline
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 sequenceDiagram
     participant DEV as 👤 Developer
     participant GH as 🐙 GitHub
@@ -181,13 +174,13 @@ Every concept you learned maps to a part of this pipeline:
 ## 🎓 What's Next?
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     NOW["✅ You completed<br/>this course!"] --> NEXT1["📦 Reusable Workflows<br/>(workflow_call)"]
     NOW --> NEXT2["🐳 Docker CI/CD<br/>(build + push images)"]
     NOW --> NEXT3["☸️ K8s Deployments<br/>(Helm + ArgoCD)"]
     NOW --> NEXT4["🔀 Branch Protection<br/>(required checks)"]
 
-    style NOW fill:#e8f5e9,stroke:#2e7d32
 ```
 
 ---

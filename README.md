@@ -8,6 +8,7 @@
 ## 🗺️ Learning Roadmap
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph TD
     START([🟢 START HERE]) --> M01
 
@@ -36,10 +37,6 @@ graph TD
     M08 --> M09 --> M10 --> M11 --> M12
     M12 --> M13
 
-    style START fill:#00c853,stroke:#00c853,color:#fff
-    style M13 fill:#ff6d00,stroke:#ff6d00,color:#fff
-    style CORE fill:#e3f2fd,stroke:#1565c0
-    style ADV fill:#fce4ec,stroke:#c62828
 ```
 
 ---
@@ -67,6 +64,7 @@ graph TD
 ## 🧪 How to Use the Demo Workflows
 
 ```mermaid
+%%{init: {"theme": "dark"}}%%
 graph LR
     A["📋 Copy .yml file"] --> B["📁 Paste to your repo's<br/>.github/workflows/"]
     B --> C["⬆️ Push to GitHub"]
@@ -74,8 +72,6 @@ graph LR
     D --> E["▶️ Run workflow"]
     E --> F["📊 See logs & output"]
 
-    style A fill:#e8eaf6,stroke:#283593
-    style F fill:#e8f5e9,stroke:#2e7d32
 ```
 
 > **All demos use `workflow_dispatch`** — you can trigger them manually from the GitHub Actions tab. No code changes needed!
