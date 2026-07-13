@@ -1,0 +1,41 @@
+name: "action for getting the name from the output of the..action"
+description: "This action is used to get the name from the output of the..action"
+
+inputs:
+  first_name:
+    required: true
+  last_name:
+    required: true
+
+outputs:
+  fname:
+    value: ${{ steps.fname.outputs.fname }}
+  lname:
+    value: ${{ steps.lname.outputs.lname }}
+  flname:
+    value: ${{ steps.fl_name.outputs.flname }}
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: "getting first name"
+      id: fname
+      shell: bash
+      run: |
+        FIRST_NAME=${{ inputs.first_name }}
+        echo "fname=$FIRST_NAME" >> $GITHUB_OUTPUT
+
+    - name: "getting last name"
+      id: lname
+      shell: bash
+      run: |
+        LAST_NAME=${{ inputs.last_name }}
+        echo "lname=$LAST_NAME" >> $GITHUB_OUTPUT
+
+    - name: "getting full name"
+      id: fl_name
+      shell: bash
+      run: |
+        FULL_NAME="${{ inputs.first_name }} ${{ inputs.last_name }}"
+        echo "flname=$FULL_NAME" >> $GITHUB_OUTPUT
